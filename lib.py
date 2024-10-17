@@ -18,6 +18,15 @@ def TFIM_hamiltonian(N, J, gamma):
         szi.append(qt.tensor([id] * i + [z] + [id] * (N - i - 1)))
     return -J * sum(szi[i] * szi[i + 1] for i in range(N - 1)) - J * szi[N - 1] * szi[0] - gamma * sum(sxi[i] for i in range(N))
 
+def z_to_x(N, psi):
+    xplus = 1/math.sqrt(2) * (qt.basis(2, 0) + qt.basis(2, 1))
+    xminus = 1/math.sqrt(2) * (qt.basis(2, 0) - qt.basis(2, 1))
+    dim = 2 ** N
+    basis = []
+    for i in range(dim):
+        basis.append(qt.tensor([[xplus, xminus][(i >> (N - k - 1)) & 1] for k in range(0, N)]))
+    return psi.transform(basis)
+
 # magnetization
 
 def count_magnetization(state): 
@@ -28,17 +37,22 @@ def count_magnetization(state):
     if state == 0: return 0
     return sum((state >> n) & 1 for n in range(0, int(np.log2(state)) + 1))
 
-def absolute_z_magnetization(N, psi):
+def z_magnetization(N, psi, signed = True):
+    # we could've also replaced this with expectation value of 
+    # sigmaz_i summed over all indexes for signed, and 
+    # |0><0|_i summed over all indexes for unsigned
     total_mag = 0
     dim = 2 ** N
     for basis_vec in range(dim):
         down_spins = count_magnetization(basis_vec)
-        total_mag += abs(psi[basis_vec]) ** 2 * abs(down_spins - (N - down_spins))
+        mag = abs(psi[basis_vec]) ** 2 * ((N - down_spins) - down_spins)
+        if not signed: mag = abs(mag)
+        total_mag += mag
     return total_mag
 
-def signed_x_magnetization(N, state):
-    total_mag = 0
-    return total_mag
+def x_magnetization(N, psi, signed = True):
+    x_psi = z_to_x(N, psi)
+    return z_magnetization(N, x_psi, signed = signed)
 
 # manual NN training
 
