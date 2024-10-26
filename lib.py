@@ -1,10 +1,12 @@
 import qutip as qt
 import numpy as np
+import numpy.random as npr
 import matplotlib.pyplot as plt
 import scipy.optimize as so
 import math
 import torch
 import torch.nn as nn
+from MHNeuralState import SparseStateVector, MHNeuralState
 
 def TFIM_hamiltonian(N, J, gamma):
     # uses ring shape
@@ -151,7 +153,7 @@ def TFIM_expectation_from_torch(nn_output, vars, output_to_psi):
     N, J, Gamma = vars
     dim = 2 ** N
     psi = output_to_psi(nn_output)
-    mag = sum(abs(n) ** 2 for n in psi)
+    mag = torch.norm(psi, 2) # sum(abs(n) ** 2 for n in psi) # make these torch functions, use torch.norm
     phi = torch.zeros(dim, dtype = torch.complex64)
     bra_psi = psi.reshape((1, -1)).conj()
     TFIM_multiply(psi, phi, N, J, Gamma)
@@ -166,10 +168,17 @@ def generate_state_1D(state_num, N):
         x[n] = (state_num >> n) & 1
     return x
 
+def generate_state_array(state_num, N):
+    x = []
+    for n in range(N):
+        x.append((state_num >> n) & 1)
+    return x
+
 def generate_input_torch(N):
     dim = 2 ** N
     input = np.array([generate_state_1D(state, N) for state in range(dim)])
     input = torch.tensor(input, dtype = torch.float32)
+    # input = torch.tensor([generate_state_array(state, N) for state in range(dim)])
     return input
 
 def model_to_ground_state(model, input, output_to_psi):
@@ -182,3 +191,43 @@ def model_to_ground_state(model, input, output_to_psi):
     mag = sum(abs(n) ** 2 for n in pred_gs)
     pred_gs = qt.Qobj(pred_gs.data / math.sqrt(mag))
     return pred_gs
+
+# Metropolis-Hastings Sampling
+
+
+# def TFIM_multiply(psi, phi, N, J, Gamma):
+#     dim = 2 ** N
+#     for state in range(dim):
+#         jtotal = 0
+#         for site in range(N - 1):
+#             jtotal += J if ((state >> site) ^ (state >> (site + 1))) & 1 else -J 
+#         jtotal += J if ((state >> (N - 1)) ^ (state >> 0)) & 1 else -J
+#         phi[state] = jtotal * psi[state]
+    
+#     for state in range(dim):
+#         for site in range(N):
+#             flipped_state = state ^ (1 << site)
+#             phi[flipped_state] -= Gamma*psi[state]
+
+def MH_sample(p, x_func, x0, num_samples, burnin = 0, lag = 0):
+    x = x0
+    data = [x] 
+    for _ in range(burnin):
+        new_x = x_func(x)
+        ratio = p(new_x) / p(x)
+        if ratio > 1 or ratio > npr.uniform(0, 1):
+            x = new_x
+    for _ in range(num_samples):
+        for _ in range(lag):
+            new_x = x_func(x)
+            ratio = p(new_x) / p(x)
+            if ratio > 1 or ratio > npr.uniform(0, 1):
+                x = new_x
+        new_x = x_func(x)
+        ratio = p(new_x) / p(x)
+        if ratio > 1 or ratio > npr.uniform(0, 1):
+            data.append(new_x)
+            x = new_x 
+        else: 
+            data.append(x)
+    return data
