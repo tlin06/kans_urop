@@ -153,7 +153,8 @@ def TFIM_expectation_from_torch(nn_output, vars, output_to_psi):
     N, J, Gamma = vars
     dim = 2 ** N
     psi = output_to_psi(nn_output)
-    mag = torch.norm(psi, 2) # sum(abs(n) ** 2 for n in psi) # make these torch functions, use torch.norm
+    mag = torch.norm(psi, 2) ** 2
+    # mag = sum(abs(n) ** 2 for n in psi) # make these torch functions, use torch.norm
     phi = torch.zeros(dim, dtype = torch.complex64)
     bra_psi = psi.reshape((1, -1)).conj()
     TFIM_multiply(psi, phi, N, J, Gamma)
