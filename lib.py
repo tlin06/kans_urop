@@ -8,6 +8,20 @@ import torch
 import torch.nn as nn
 from NeuralStates import SparseStateVector, MHNeuralState
 
+# utility
+
+def calc_bitdist(a, b, N):
+    diffs = a ^ b
+    return sum((diffs >> i) & 1 for i in range(N))
+
+def generate_adjacencies(state, N):
+    adjacents = []
+    for i in range(0, N):
+        adjacents.append(state ^ (1 << i))
+    return adjacents
+
+# transverse field Ising model
+
 def TFIM_hamiltonian(N, J, gamma):
     """
     Generates sparse Qobj for TFIM system with ring shape
@@ -38,6 +52,20 @@ def z_to_x(N, psi):
         basis.append(qt.tensor([[xplus, xminus][(i >> (N - k - 1)) & 1] for k in range(0, N)]))
     return psi.transform(basis)
 
+def calc_H_elem(N, J, Gamma, i, j):
+    """
+    Calculates <i|H|j> 
+    """
+    if i != j:
+        if calc_bitdist(i, j, N) == 1:
+            return -Gamma
+        return 0
+    total = 0
+    for index in range(0, N - 1):
+        total += ((i >> index) ^ (i >> (index + 1))) & 1
+    total += ((i >> (N - 1)) ^ (i >> 0)) & 1
+    return - ((N - total) * J + total * -J)
+    
 # magnetization
 
 def count_magnetization(state): 
@@ -219,7 +247,7 @@ def TFIM_expectation_from_torch(nn_output, vars, output_to_psi):
         nn_output: torch.tensor of shape (2^N, N) output from torch model
         vars: tuple of (N, J, Gamma)
         output_to_psi: function converting nn_output to 2^N size 
-        statevectir
+        statevector
     """
     N, J, Gamma = vars
     dim = 2 ** N
@@ -306,3 +334,31 @@ def train_model_to_gs(model, generate_y_pred, loss_fn, num_epochs, data_rate = 5
             loss_data.append(loss.item())
             epochs.append(epoch)
     return epochs, loss_data
+
+# MC methods
+
+def TFIM_expectation_using_locals(sampled_vector, N, J, Gamma, model, output_to_psi):
+    psi_calcs = {}
+    def psi(x):
+        if x in sampled_vector.values:
+            return sampled_vector.values[x]
+        if x in psi_calcs:
+            return psi_calcs[x]
+        tens = torch.tensor([generate_state_array(x, N)], dtype = torch.float32)
+        complex_amp = output_to_psi(model(tens))[0]
+        psi_calcs[x] = complex_amp
+        return complex_amp
+    total_num = 0
+    total_denom = 0
+    for basis_state in sampled_vector.values:
+        eloc = 0
+        for adjacency in generate_adjacencies(basis_state, N):
+            eloc += calc_H_elem(N, J, Gamma, basis_state, adjacency) * psi(adjacency) / psi(basis_state)
+        eloc += calc_H_elem(N, J, Gamma, basis_state, basis_state)
+        amp = abs(psi(basis_state)) ** 2
+        total_num += amp * eloc
+        total_denom += amp
+    return (total_num / total_denom).real
+
+
+    
