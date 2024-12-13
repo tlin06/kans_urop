@@ -1,0 +1,11 @@
+[project]
+name = "kans_urop"
+version = "0.1.0"
+description = "Machine Learning for Ground State Problem"
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["test", "libraries"]

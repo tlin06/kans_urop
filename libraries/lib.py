@@ -1,12 +1,7 @@
 import qutip as qt
 import numpy as np
-import numpy.random as npr
-import matplotlib.pyplot as plt
-import scipy.optimize as so
 import math
 import torch
-import torch.nn as nn
-from NeuralStates import SparseStateVector, MHNeuralState
 
 # utility
 
