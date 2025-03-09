@@ -9,12 +9,21 @@ def calc_bitdist(a, b, N):
     diffs = a ^ b
     return sum((diffs >> i) & 1 for i in range(N))
 
-def generate_adjacencies(state, N):
-    adjacents = []
-    for i in range(0, N):
-        adjacents.append(state ^ (1 << i))
-    adjacents.append(state)
-    return adjacents
+def z_to_x(N, psi):
+    """
+    Converts Qobj from z basis to x basis
+
+    Args:
+        N (int): number of qubits
+        psi (Qobj): quantum state
+    """
+    xplus = 1/math.sqrt(2) * (qt.basis(2, 0) + qt.basis(2, 1))
+    xminus = 1/math.sqrt(2) * (qt.basis(2, 0) - qt.basis(2, 1))
+    dim = 2 ** N
+    basis = []
+    for i in range(dim):
+        basis.append(qt.tensor([[xplus, xminus][(i >> (N - k - 1)) & 1] for k in range(0, N)]))
+    return psi.transform(basis)
 
 # transverse field Ising model
 
@@ -42,21 +51,12 @@ def ground_state_energy_per_site(h_t, N):
 def energy_single_p_mode(h_t, P):
     return np.sqrt(1 + h_t**2 - 2 * h_t * np.cos(P))
 
-def z_to_x(N, psi):
-    """
-    Converts Qobj from z basis to x basis
-
-    Args:
-        N (int): number of qubits
-        psi (Qobj): quantum state
-    """
-    xplus = 1/math.sqrt(2) * (qt.basis(2, 0) + qt.basis(2, 1))
-    xminus = 1/math.sqrt(2) * (qt.basis(2, 0) - qt.basis(2, 1))
-    dim = 2 ** N
-    basis = []
-    for i in range(dim):
-        basis.append(qt.tensor([[xplus, xminus][(i >> (N - k - 1)) & 1] for k in range(0, N)]))
-    return psi.transform(basis)
+def generate_adjacencies(state, N):
+    adjacents = []
+    for i in range(0, N):
+        adjacents.append(state ^ (1 << i))
+    adjacents.append(state)
+    return adjacents
 
 def calc_H_elem(N, J, Gamma, i, j):
     """
@@ -360,7 +360,7 @@ def TFIM_expectation_using_locals(sampled_vector, N, J, Gamma, model, output_to_
         eloc = 0
         for adjacency in generate_adjacencies(basis_state, N):
             eloc += calc_H_elem(N, J, Gamma, basis_state, adjacency) * psi(adjacency) / psi(basis_state)
-        eloc += calc_H_elem(N, J, Gamma, basis_state, basis_state)
+        # eloc += calc_H_elem(N, J, Gamma, basis_state, basis_state)
         amp = abs(psi(basis_state)) ** 2
         total_num += amp * eloc
         total_denom += amp
