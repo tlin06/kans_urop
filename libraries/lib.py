@@ -13,6 +13,7 @@ def generate_adjacencies(state, N):
     adjacents = []
     for i in range(0, N):
         adjacents.append(state ^ (1 << i))
+    adjacents.append(state)
     return adjacents
 
 # transverse field Ising model
@@ -30,6 +31,16 @@ def TFIM_hamiltonian(N, J, gamma):
         sxi.append(qt.tensor([id] * i + [x] + [id] * (N - i - 1)))
         szi.append(qt.tensor([id] * i + [z] + [id] * (N - i - 1)))
     return -J * sum(szi[i] * szi[i + 1] for i in range(N - 1)) - J * szi[N - 1] * szi[0] - gamma * sum(sxi[i] for i in range(N))
+
+def ground_state_energy(h, N):
+    return ground_state_energy_per_site(h, N) * N
+def ground_state_energy_per_site(h_t, N):
+    Ps = 0.5 * np.arange(- (N - 1), N - 1 + 2, 2)
+    Ps = Ps * 2 * np.pi / N
+    energies_p_modes = np.array([energy_single_p_mode(h_t, P) for P in Ps])
+    return - 1 / N * np.sum(energies_p_modes)
+def energy_single_p_mode(h_t, P):
+    return np.sqrt(1 + h_t**2 - 2 * h_t * np.cos(P))
 
 def z_to_x(N, psi):
     """
