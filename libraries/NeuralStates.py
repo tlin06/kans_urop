@@ -80,41 +80,43 @@ class SparseStateVector:
         return [self.values.get(s, 0).item() for s in range(0, 2 ** N)]
 
 class UniformNeuralState(SparseStateVector):
-        def __init__(self, N, model, output_to_psi, num_samples, informed = False):
-            """
-            Initializes sparse vector values
+    def __init__(self, N, model, output_to_psi, num_samples):
+        """
+        Initializes sparse vector values
 
-            Args:
-                N (int): number of qubits
-                model: torch model representing psi(x), which returns complex amplitude given integer state
-                output_to_psi (function): takes in output of model to compute complex amplitude
-                num_samples (int): number of unique integer samples to take
-                informed (bool): whether to guarantee sample first and last states
-            """
-            super().__init__()
-            self.samples = num_samples
-            def psi(x):
-                tens = torch.tensor([lib.generate_state_array(x, N)], dtype = torch.float32)
-                return output_to_psi(model(tens))[0]
-            if num_samples >= 2 ** N:
-                for state in range(2 ** N):
-                    self.values[state] = psi(state)
-            else:
-                sampled_states = set()
-                if informed: 
-                    sampled_states.add(0)
-                    sampled_states.add(2 ** N - 1)
-                    num_samples = num_samples - 2
-                for _ in range(num_samples):
+        Args:
+            N (int): number of qubits
+            model: torch model representing psi(x), which returns complex amplitude given integer state
+            output_to_psi (function): takes in output of model to compute complex amplitude
+            num_samples (int): number of unique integer samples to take
+            informed (bool): whether to guarantee sample first and last states
+        """
+        super().__init__()
+        self.samples = num_samples
+        self.list = []
+        self.nn_output = {}
+        def psi(x):
+            tens = torch.tensor([lib.generate_state_array(x, N)], dtype = torch.float32)
+            nn_output = model(tens)
+            return output_to_psi(nn_output)[0], nn_output
+        if num_samples >= 2 ** N:
+            for state in range(2 ** N):
+                self.values[state] = psi(state)
+                self.list.append(state)
+                self.values[state], self.nn_output[state] = psi(state)
+        else:
+            sampled_states = set()
+            for _ in range(num_samples):
+                x = random.getrandbits(N)
+                while x in sampled_states:
                     x = random.getrandbits(N)
-                    while x in sampled_states:
-                        x = random.getrandbits(N)
-                    sampled_states.add(x)
-                for state in sampled_states:
-                    self.values[state] = psi(state)
+                sampled_states.add(x)
+                self.list.append(x)
+            for state in sampled_states:
+                self.values[state], self.nn_output[state] = psi(state)
 
 class MHNeuralState(SparseStateVector):
-    def __init__(self, N, model, output_to_psi, x_func, x0, num_samples, burnin = 0, lag = 0, informed = False):
+    def __init__(self, N, model, output_to_psi, x_func, x0, num_samples, burnin = 0, lag = 0):
         """
         Initializes distribution of samples and vector values
 
@@ -133,52 +135,51 @@ class MHNeuralState(SparseStateVector):
         super().__init__()
         self.distribution = {}
         self.samples = num_samples
+        self.list = []
+        self.nn_output = {}
         def psi(x):
             tens = torch.tensor([lib.generate_state_array(x, N)], dtype = torch.float32)
-            return output_to_psi(model(tens))[0]
+            nn_output = model(tens)
+            return output_to_psi(nn_output)[0], nn_output[0]
         num_uniform = burnin + num_samples * (lag + 1)
         rand_uniform = npr.uniform(0, 1, num_uniform)
         index = 0
-        if informed: 
-            self.values[0] = psi(0)
-            self.values[2 ** N - 1] = psi(2 ** N - 1)
-            self.distribution[0] = 1
-            self.distribution[2 ** N - 1] = 1
-            num_samples = num_samples - 2
+
         x = x0
-        val = psi(x)
+
+        psi_val, nn_val = psi(x)
+        self.values[x] = psi_val
+        self.nn_output[x] = nn_val
+
         for _ in range(burnin):
             new_x = x_func(x)
-            new_val = self.values[new_x] if new_x in self.values else psi(new_x)
-            ratio = abs(new_val) ** 2 / abs(val) ** 2
+            new_psi_val = self.values[new_x] if new_x in self.values else psi(new_x)[0]
+            ratio = abs(new_psi_val) ** 2 / abs(psi_val) ** 2
             if ratio > 1 or ratio > rand_uniform[index]:
                 x = new_x
-                val = new_val
+                psi_val = new_psi_val
             index += 1
         for _ in range(num_samples):
             for _ in range(lag):
                 new_x = x_func(x)
-                new_val = self.values[new_x] if new_x in self.values else psi(new_x)
-                ratio = abs(new_val) ** 2 / abs(val) ** 2
+                new_psi_val = self.values[new_x] if new_x in self.values else psi(new_x)[0]
+                ratio = abs(new_psi_val) ** 2 / abs(psi_val) ** 2
                 if ratio > 1 or ratio > rand_uniform[index]:
                     x = new_x
-                    val = new_val
+                    psi_val = new_psi_val
                 index += 1
             new_x = x_func(x)
-            new_val = self.values[new_x] if new_x in self.values else psi(new_x)
-            ratio = abs(new_val) ** 2 / abs(val) ** 2
+            if new_x in self.values: new_psi_val, new_nn_val = self.values[new_x], self.nn_output[new_x]
+            else: new_psi_val, new_nn_val = psi(new_x)
+            ratio = abs(new_psi_val) ** 2 / abs(psi_val) ** 2
             if ratio > 1 or ratio > rand_uniform[index]:
                 self.distribution[new_x] = self.distribution.get(new_x, 0) + 1
-                self.values[new_x] = new_val
+                self.list.append(new_x)
                 x = new_x 
-                val = new_val 
+                psi_val = new_psi_val 
             else: 
                 self.distribution[x] = self.distribution.get(x, 0) + 1
-                self.values[new_x] = new_val
+                self.list.append(x)
+            self.values[new_x] = new_psi_val
+            self.nn_output[new_x] = new_nn_val
             index += 1
-
-    def distribution_to_list(self):
-        """
-        Returns list of sampled states with repetition
-        """
-        return [state for state in self.distribution for _ in range(self.distribution[state])]
