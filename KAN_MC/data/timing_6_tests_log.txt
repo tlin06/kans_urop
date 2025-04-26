@@ -1,0 +1,67 @@
+processing N=6, h=0.1, trial 0 took 19.132020473480225 seconds
+processing N=6, h=0.1, trial 1 took 24.10953187942505 seconds
+processing N=6, h=0.1, trial 2 took 17.102071046829224 seconds
+processing N=6, h=0.1, trial 3 took 22.20484733581543 seconds
+processing N=6, h=0.1, trial 4 took 23.057159662246704 seconds
+processing N=6, h=0.1, trial 5 took 19.718694925308228 seconds
+processing N=6, h=0.1, trial 6 took 33.947471380233765 seconds
+processing N=6, h=0.1, trial 7 took 20.944292306900024 seconds
+processing N=6, h=0.1, trial 8 took 32.19949984550476 seconds
+processing N=6, h=0.1, trial 9 took 22.848910331726074 seconds
+N=6, h=0.1 took 233.28680658340454 seconds
+the distribution was: 
+initiate KAN took 0.26820802688598633 seconds
+sampling took 142.57247591018677 seconds
+generate eloc distr took 67.84926223754883 seconds
+convert to tensor took 0.1971299648284912 seconds
+generate input samples took 0.3510127067565918 seconds
+forward pass took 9.821208000183105 seconds
+calc loss took 0.9112772941589355 seconds
+loss backward took 10.818179368972778 seconds
+optimizer step took 0.49805307388305664 seconds
+
+processing N=6, h=1, trial 0 took 46.486263036727905 seconds
+processing N=6, h=1, trial 1 took 48.21548557281494 seconds
+processing N=6, h=1, trial 2 took 43.17478156089783 seconds
+processing N=6, h=1, trial 3 took 45.267531871795654 seconds
+processing N=6, h=1, trial 4 took 48.662081480026245 seconds
+processing N=6, h=1, trial 5 took 41.66804885864258 seconds
+processing N=6, h=1, trial 6 took 47.863609313964844 seconds
+processing N=6, h=1, trial 7 took 43.29336452484131 seconds
+processing N=6, h=1, trial 8 took 48.1091947555542 seconds
+processing N=6, h=1, trial 9 took 47.98686504364014 seconds
+N=6, h=1 took 458.5996479988098 seconds
+the distribution was: 
+initiate KAN took 0.024211645126342773 seconds
+sampling took 262.96479868888855 seconds
+generate eloc distr took 172.8030035495758 seconds
+convert to tensor took 0.22905635833740234 seconds
+generate input samples took 0.3658738136291504 seconds
+forward pass took 10.054339170455933 seconds
+calc loss took 0.932023286819458 seconds
+loss backward took 10.846583127975464 seconds
+optimizer step took 0.379758358001709 seconds
+
+processing N=6, h=10, trial 0 took 100.21953964233398 seconds
+processing N=6, h=10, trial 1 took 61.82133913040161 seconds
+processing N=6, h=10, trial 2 took 72.53803277015686 seconds
+processing N=6, h=10, trial 3 took 60.71892023086548 seconds
+processing N=6, h=10, trial 4 took 61.193405866622925 seconds
+processing N=6, h=10, trial 5 took 58.78438401222229 seconds
+processing N=6, h=10, trial 6 took 57.06345200538635 seconds
+processing N=6, h=10, trial 7 took 60.65567183494568 seconds
+processing N=6, h=10, trial 8 took 63.58628606796265 seconds
+processing N=6, h=10, trial 9 took 64.55322861671448 seconds
+N=6, h=10 took 658.5789797306061 seconds
+the distribution was: 
+initiate KAN took 0.029938697814941406 seconds
+sampling took 442.4935522079468 seconds
+generate eloc distr took 189.63296484947205 seconds
+convert to tensor took 0.3008580207824707 seconds
+generate input samples took 0.41937780380249023 seconds
+forward pass took 11.76164960861206 seconds
+calc loss took 0.8252403736114502 seconds
+loss backward took 12.482179164886475 seconds
+optimizer step took 0.6332190036773682 seconds
+
+total runtime: 1357.137201309204
