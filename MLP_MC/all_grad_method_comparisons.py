@@ -109,7 +109,7 @@ def bitflip_x(x, N, flips):
 
 npr.seed(0)
 torch.manual_seed(0)
-f = open('data/grad_comparison_log.txt', 'w')
+f = None#open('data/grad_comparison_log.txt', 'w')
 all_data = {} # keyed by (N, h, optim_name, method)
 
 
