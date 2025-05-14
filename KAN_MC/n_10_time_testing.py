@@ -48,8 +48,7 @@ npr.seed(0)
 torch.manual_seed(0)
 
 def get_file(mode='a'):
-    raise Exception('do not run again')
-    return #open('data/timing_6_tests_log.txt', mode)
+    return #open('data/timing_10_tests_log.txt', mode)
 
 f = get_file('w')
 f.close()
@@ -61,11 +60,11 @@ time_keys = ['initiate KAN', 'sampling', "generate eloc distr", 'convert to tens
              'generate input samples', 'forward pass', 'calc loss', 
              'loss backward', 'optimizer step']
 
-n_values = [6]; h_values = [0.1, 1, 10]
+n_values = [10]; h_values = [0.1, 1, 10]
 J = 1
 num_epochs = 200
-num_trials = 10
-num_samples = 128
+num_trials = 5
+num_samples = 256
 data_rate = 1
 
 orig = time.time()
@@ -147,5 +146,5 @@ end = time.time()
 f = get_file()
 f.write(f'total runtime: {end - orig}\n')
 print(f'total runtime: {end - orig}')
-all_data.to_csv('data/KAN_n_6_data.csv')
+all_data.to_csv('data/KAN_n_10_data.csv')
 f.close()
