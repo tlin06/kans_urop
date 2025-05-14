@@ -111,7 +111,7 @@ def x_magnetization(N, psi, signed = True):
     x_psi = z_to_x(N, psi)
     return z_magnetization(N, x_psi, signed = signed)
 
-# manual NN training
+# manual NN training - legacy
 
 def TFIM_multiply(psi, phi, N, J, Gamma):
     """
@@ -341,7 +341,7 @@ def train_model_to_gs(model, generate_y_pred, loss_fn, num_epochs, data_rate = 5
             epochs.append(epoch)
     return epochs, loss_data
 
-# MC methods
+# MC methods - do not use this
 
 def TFIM_expectation_using_locals(sampled_vector, N, J, Gamma, model, output_to_psi):
     psi_calcs = {}
