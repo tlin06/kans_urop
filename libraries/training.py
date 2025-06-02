@@ -1,7 +1,7 @@
 import math
 import qutip as qt
 import torch
-from utils import generate_input_torch
+import libraries.utils as utils
 
 def model_to_ground_state(N, model, output_to_psi):
     """
@@ -13,7 +13,7 @@ def model_to_ground_state(N, model, output_to_psi):
     Returns:
         Returns normalized Qobj state derived from model
     """
-    input = generate_input_torch(N)
+    input = utils.generate_input_torch(N)
     pred = model(input)
     pred_gs = output_to_psi(pred)
     mag = math.sqrt(sum(abs(n) ** 2 for n in pred_gs))

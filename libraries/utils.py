@@ -6,6 +6,9 @@ import math
 import torch
 
 def calc_bitdist(a, b, N):
+    """
+    TODO
+    """
     diffs = a ^ b
     return sum((diffs >> i) & 1 for i in range(N))
 

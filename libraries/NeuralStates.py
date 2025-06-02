@@ -1,7 +1,8 @@
 import numpy.random as npr
 import random
 import torch
-from libraries import lib 
+from libraries import utils as utils
+
 
 class SparseStateVector:
     """
@@ -89,14 +90,13 @@ class UniformNeuralState(SparseStateVector):
             model: torch model representing psi(x), which returns complex amplitude given integer state
             output_to_psi (function): takes in output of model to compute complex amplitude
             num_samples (int): number of unique integer samples to take
-            informed (bool): whether to guarantee sample first and last states
         """
         super().__init__()
         self.samples = num_samples
         self.list = []
         self.nn_output = {}
         def psi(x):
-            tens = torch.tensor([lib.generate_state_array(x, N)], dtype = torch.float32)
+            tens = torch.tensor([utils.generate_state_array(x, N)], dtype = torch.float32)
             nn_output = model(tens)
             return output_to_psi(nn_output)[0], nn_output
         if num_samples >= 2 ** N:
@@ -116,7 +116,7 @@ class UniformNeuralState(SparseStateVector):
                 self.values[state], self.nn_output[state] = psi(state)
 
 class MHNeuralState(SparseStateVector):
-    def __init__(self, N, model, output_to_psi, x_func, x0, num_samples, burnin = 0, lag = 0):
+    def __init__(self, N, model, output_to_psi, x_func, x0, num_samples, burnin = 0, lag = 0, chains = 1):
         """
         Initializes distribution of samples and vector values
 
@@ -125,11 +125,10 @@ class MHNeuralState(SparseStateVector):
             model: torch model representing psi(x), which returns complex amplitude given integer state
             output_to_psi (function): takes in output of model to compute complex amplitude
             x_func (function): takes in state x and generates proposal x*
-            x0 (int): intger state to begin sampling
+            x0 (int): integer state to begin sampling
             num_samples (int): number of proposal x* generated
             burnin (int): number of samples to throw away before accepting first sample
             lag (int): number of samples to throw away in-between accepting samples
-            informed (bool): whether to guarantee sample first and last states
         """
         # uses arbitrary x_func for MH sampling
         super().__init__()
@@ -137,8 +136,18 @@ class MHNeuralState(SparseStateVector):
         self.samples = num_samples
         self.list = []
         self.nn_output = {}
+        if chains == 1 and isinstance(x0, int):
+            self._init_single_chain(N, model, output_to_psi, x_func, x0, num_samples, burnin = burnin, lag = lag)
+        elif len(x0) == chains:
+            self._init_multi_chain(TODO)
+        else:
+            raise Exception('invalid initial values or number of chains')
+            
+    
+    
+    def _init_single_chain(self, N, model, output_to_psi, x_func, x0, num_samples, burnin = 0, lag = 0):
         def psi(x):
-            tens = torch.tensor([lib.generate_state_array(x, N)], dtype = torch.float32)
+            tens = torch.tensor([utils.generate_state_array(x, N)], dtype = torch.float32)
             nn_output = model(tens)
             return output_to_psi(nn_output)[0], nn_output[0]
         num_uniform = burnin + num_samples * (lag + 1)
@@ -183,3 +192,12 @@ class MHNeuralState(SparseStateVector):
             self.values[new_x] = new_psi_val
             self.nn_output[new_x] = new_nn_val
             index += 1
+
+    def _init_multi_chain(self, N, model, output_to_psi, x_func, x0, num_samples, burnin = 0, lag = 0, chains = 1):
+        def psi(xs):
+            tens = utils.generate_input_samples(N, xs)
+            nn_output = model(tens)
+            return output_to_psi(nn_output), nn_output
+        
+        xs = x0
+        

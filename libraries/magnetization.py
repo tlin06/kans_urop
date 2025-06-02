@@ -1,6 +1,6 @@
 # magnetization
 import numpy as np
-from tfim_functions import z_to_x
+import libraries.utils as utils
 
 def count_magnetization(state): 
     """
@@ -36,5 +36,5 @@ def x_magnetization(N, psi, signed = True):
     Calculates the amount of spin in the x direction in a z-basis
     statevector. 
     """
-    x_psi = z_to_x(N, psi)
+    x_psi = utils.z_to_x(N, psi)
     return z_magnetization(N, x_psi, signed = signed)
