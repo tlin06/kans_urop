@@ -66,6 +66,14 @@ def generate_input_samples(N, samples):
     """
     return torch.tensor([generate_state_array(x, N) for x in samples]).to(torch.float32)
 
+def generate_input_samples_torch(samples, N):
+    """
+    TODO
+    """
+    powers = torch.arange(N, dtype=torch.long)               # shape: (N,)
+    bits = (samples.unsqueeze(1) >> powers) & 1           # shape: (B, N)
+    return bits.to(torch.float32)
+
 def log_amp_phase(nn_output):
     """
     Given (N, 2) shape output from neural network with the first column representing log(amp)
@@ -90,3 +98,30 @@ def bitflip_x(x, N, flips):
     for _ in range(flips):
         new_x = x ^ (1 << npr.randint(0, N))
     return new_x
+
+def bitflip_batch(xs, N, flips):
+    """
+    Vectorized random bit flips on a batch of integers.
+
+    Args:
+        xs (Tensor): shape (B,), integers
+        N (int): number of bits
+        flips (int): number of random bit flips per element
+
+    Returns:
+        Tensor of shape (B,), integers after bit flips
+    """
+    B = xs.shape[0]
+    xs = xs.clone()
+
+    # Generate random bit indices for each flip and sample
+    bit_indices = torch.randint(0, N, size=(B, flips))
+
+    # Compute bitmasks: 1 << bit index
+    bitmasks = (1 << bit_indices)  # shape: (B, flips)
+
+    flip_masks = bitmasks[:, 0]
+    for i in range(1, flips):
+        flip_masks = flip_masks ^ bitmasks[:, i]
+
+    return xs ^ flip_masks
