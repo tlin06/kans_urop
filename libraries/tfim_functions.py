@@ -74,9 +74,9 @@ def generate_eloc_distr(sampled_vector, N, J, Gamma, model):
 
     def model_to_output(x):
         if x in sampled_vector.nn_output:
-            return sampled_vector.nn_output[x]
+            return torch.Tensor(sampled_vector.nn_output[x])
         if x in visited:
-            return nn_output_calcs[visited[x]]
+            return torch.Tensor(nn_output_calcs[visited[x]])
         raise Exception('should not reach')
     
     eloc_values = {}
