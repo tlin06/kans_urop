@@ -1,0 +1,181 @@
+processing N=10, h=0.1, trial 0 took 62.79185509681702 seconds
+processing N=10, h=0.1, trial 1 took 51.42266631126404 seconds
+processing N=10, h=0.1, trial 2 took 63.0853476524353 seconds
+N=10, h=0.1 took 172.9019911289215 seconds
+the distribution was: 
+initiate MLP took 0.8043653964996338 seconds
+sampling took 143.26757431030273 seconds
+generate eloc distr took 12.693759202957153 seconds
+convert to tensor took 0.974311351776123 seconds
+generate input samples took 4.063032627105713 seconds
+forward pass took 3.6708180904388428 seconds
+calc loss took 0.5484776496887207 seconds
+loss backward took 5.062410354614258 seconds
+optimizer step took 1.81724214553833 seconds
+
+processing N=10, h=1, trial 0 took 131.1559226512909 seconds
+processing N=10, h=1, trial 1 took 132.5049011707306 seconds
+processing N=10, h=1, trial 2 took 113.10396075248718 seconds
+N=10, h=1 took 371.9485969543457 seconds
+the distribution was: 
+initiate MLP took 0.0029702186584472656 seconds
+sampling took 156.67964363098145 seconds
+generate eloc distr took 198.67429184913635 seconds
+convert to tensor took 1.1758220195770264 seconds
+generate input samples took 4.234171628952026 seconds
+forward pass took 3.78183913230896 seconds
+calc loss took 0.5353050231933594 seconds
+loss backward took 5.012949705123901 seconds
+optimizer step took 1.8516037464141846 seconds
+
+processing N=10, h=10, trial 0 took 222.17086696624756 seconds
+processing N=10, h=10, trial 1 took 248.83238220214844 seconds
+processing N=10, h=10, trial 2 took 200.06055736541748 seconds
+N=10, h=10 took 666.2389059066772 seconds
+the distribution was: 
+initiate MLP took 0.0035736560821533203 seconds
+sampling took 139.06997418403625 seconds
+generate eloc distr took 511.19224786758423 seconds
+convert to tensor took 1.122145175933838 seconds
+generate input samples took 3.8153200149536133 seconds
+forward pass took 3.7768688201904297 seconds
+calc loss took 0.4669156074523926 seconds
+loss backward took 5.244565010070801 seconds
+optimizer step took 1.5472955703735352 seconds
+
+processing N=20, h=0.1, trial 0 took 95.13529133796692 seconds
+processing N=20, h=0.1, trial 1 took 129.6676959991455 seconds
+processing N=20, h=0.1, trial 2 took 125.43274116516113 seconds
+N=20, h=0.1 took 344.3243987560272 seconds
+the distribution was: 
+initiate MLP took 0.002875804901123047 seconds
+sampling took 287.1003725528717 seconds
+generate eloc distr took 38.08013463020325 seconds
+convert to tensor took 1.049957513809204 seconds
+generate input samples took 7.090294361114502 seconds
+forward pass took 3.62473201751709 seconds
+calc loss took 0.539238452911377 seconds
+loss backward took 5.110270023345947 seconds
+optimizer step took 1.7265233993530273 seconds
+
+processing N=20, h=1, trial 0 took 415.7930166721344 seconds
+processing N=20, h=1, trial 1 took 406.8849048614502 seconds
+processing N=20, h=1, trial 2 took 516.1186847686768 seconds
+N=20, h=1 took 1331.621073961258 seconds
+the distribution was: 
+initiate MLP took 0.0020198822021484375 seconds
+sampling took 358.8631510734558 seconds
+generate eloc distr took 950.6525092124939 seconds
+convert to tensor took 1.7398831844329834 seconds
+generate input samples took 7.905438661575317 seconds
+forward pass took 4.344208478927612 seconds
+calc loss took 0.6513597965240479 seconds
+loss backward took 5.46049952507019 seconds
+optimizer step took 2.0020041465759277 seconds
+
+processing N=20, h=10, trial 0 took 773.9147782325745 seconds
+processing N=20, h=10, trial 1 took 1143.2050251960754 seconds
+processing N=20, h=10, trial 2 took 899.5416762828827 seconds
+N=20, h=10 took 2807.377984046936 seconds
+the distribution was: 
+initiate MLP took 0.0031342506408691406 seconds
+sampling took 389.71657133102417 seconds
+generate eloc distr took 2395.50691819191 seconds
+convert to tensor took 2.3550431728363037 seconds
+generate input samples took 8.290050983428955 seconds
+forward pass took 3.835331678390503 seconds
+calc loss took 0.6003391742706299 seconds
+loss backward took 5.106931447982788 seconds
+optimizer step took 1.9636638164520264 seconds
+
+processing N=30, h=0.1, trial 0 took 139.3005828857422 seconds
+processing N=30, h=0.1, trial 1 took 134.75573658943176 seconds
+processing N=30, h=0.1, trial 2 took 116.33336472511292 seconds
+N=30, h=0.1 took 380.24958658218384 seconds
+the distribution was: 
+initiate MLP took 0.0 seconds
+sampling took 298.31611919403076 seconds
+generate eloc distr took 64.9307689666748 seconds
+convert to tensor took 0.9743688106536865 seconds
+generate input samples took 8.104074478149414 seconds
+forward pass took 2.8007144927978516 seconds
+calc loss took 0.4864819049835205 seconds
+loss backward took 3.5120089054107666 seconds
+optimizer step took 1.1250498294830322 seconds
+
+processing N=30, h=1, trial 0 took 557.4690043926239 seconds
+processing N=30, h=1, trial 1 took 578.2120566368103 seconds
+processing N=30, h=1, trial 2 took 584.2299237251282 seconds
+N=30, h=1 took 1709.9779887199402 seconds
+the distribution was: 
+initiate MLP took 0.0020041465759277344 seconds
+sampling took 348.91109228134155 seconds
+generate eloc distr took 1343.0042779445648 seconds
+convert to tensor took 1.237259864807129 seconds
+generate input samples took 8.531193256378174 seconds
+forward pass took 3.530064821243286 seconds
+calc loss took 0.3904886245727539 seconds
+loss backward took 3.479581832885742 seconds
+optimizer step took 0.8920259475708008 seconds
+
+processing N=30, h=10, trial 0 took 1554.3924760818481 seconds
+processing N=30, h=10, trial 1 took 1277.1091809272766 seconds
+processing N=30, h=10, trial 2 took 1203.3360962867737 seconds
+N=30, h=10 took 4023.6119797229767 seconds
+the distribution was: 
+initiate MLP took 0.0010006427764892578 seconds
+sampling took 554.6645803451538 seconds
+generate eloc distr took 3445.1584458351135 seconds
+convert to tensor took 2.4175047874450684 seconds
+generate input samples took 10.944975137710571 seconds
+forward pass took 3.6565544605255127 seconds
+calc loss took 0.47438573837280273 seconds
+loss backward took 4.7084760665893555 seconds
+optimizer step took 1.5860567092895508 seconds
+
+processing N=40, h=0.1, trial 0 took 460.16394233703613 seconds
+processing N=40, h=0.1, trial 1 took 523.8068153858185 seconds
+processing N=40, h=0.1, trial 2 took 604.0448746681213 seconds
+N=40, h=0.1 took 1572.4330151081085 seconds
+the distribution was: 
+initiate MLP took 0.002086162567138672 seconds
+sampling took 1208.1496171951294 seconds
+generate eloc distr took 327.6600170135498 seconds
+convert to tensor took 2.7457377910614014 seconds
+generate input samples took 18.923627614974976 seconds
+forward pass took 4.602205514907837 seconds
+calc loss took 0.9709773063659668 seconds
+loss backward took 6.015717267990112 seconds
+optimizer step took 3.3630292415618896 seconds
+
+processing N=40, h=1, trial 0 took 1391.8871443271637 seconds
+processing N=40, h=1, trial 1 took 1885.6658477783203 seconds
+processing N=40, h=1, trial 2 took 2052.3295266628265 seconds
+N=40, h=1 took 5315.997316837311 seconds
+the distribution was: 
+initiate MLP took 0.0031003952026367188 seconds
+sampling took 876.5421164035797 seconds
+generate eloc distr took 4407.308486223221 seconds
+convert to tensor took 2.607314109802246 seconds
+generate input samples took 16.895050048828125 seconds
+forward pass took 4.691936731338501 seconds
+calc loss took 0.6949989795684814 seconds
+loss backward took 5.001581192016602 seconds
+optimizer step took 2.252732753753662 seconds
+
+processing N=40, h=10, trial 0 took 2328.7883241176605 seconds
+processing N=40, h=10, trial 1 took 1482.013896226883 seconds
+processing N=40, h=10, trial 2 took 1364.8779573440552 seconds
+N=40, h=10 took 5160.200979232788 seconds
+the distribution was: 
+initiate MLP took 0.002218008041381836 seconds
+sampling took 695.9964511394501 seconds
+generate eloc distr took 4438.200442075729 seconds
+convert to tensor took 2.2084226608276367 seconds
+generate input samples took 14.318073272705078 seconds
+forward pass took 3.5157105922698975 seconds
+calc loss took 0.3957700729370117 seconds
+loss backward took 4.240412473678589 seconds
+optimizer step took 1.3234789371490479 seconds
+
+total runtime: 23969.57234621048
