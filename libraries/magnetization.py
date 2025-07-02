@@ -5,11 +5,19 @@ import libraries.utils as utils
 def count_magnetization(state): 
     """
     Counts number of 1s in binary representation of some integer
-    With integer encoding of state such that 1 in binary representation 
+    with integer encoding of state such that 1 in binary representation 
     is spin down and 0 is spin up. Returns number of spin downs.
     """
     if state == 0: return 0
     return sum((state >> n) & 1 for n in range(0, int(np.log2(state)) + 1))
+
+def count_half_magnetization(state, odd=False): 
+    """
+    Counts number of 1s in every other site of some state represented as a bitstring.
+    with 1 as spin down and 0 as spin up. Returns number of spin downs.
+    """
+    if state == 0: return 0
+    return sum((state >> n) & 1 for n in range(odd, int(np.log2(state)) + 1, 2))
 
 def z_magnetization(N, psi, signed = True):
     """
