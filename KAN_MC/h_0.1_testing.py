@@ -12,11 +12,11 @@ import time
 import warnings
 warnings.filterwarnings('ignore')
 
-npr.seed(0)
-torch.manual_seed(0)
+npr.seed(1)
+torch.manual_seed(1)
 
 def get_file(mode='a'):
-    return #open('data/timing_10_20_tests_log.txt', mode)
+    return open('data/timing_h_0.1_log.txt', mode)
 
 f = get_file('w')
 f.close()
@@ -28,13 +28,13 @@ time_keys = ['initiate KAN', 'sampling', "generate eloc distr", 'convert to tens
              'generate input samples', 'forward pass', 'calc loss', 
              'loss backward', 'optimizer step']
 
-n_values = [10, 20]; h_values = [0.1, 1, 10]
+n_values = [10, 20]; h_values = [0.1]
 J = 1
 num_epochs = 300
-num_trials = 1
+num_trials = 3
 num_samples = 512
 data_rate = 1
-chains = 64
+chains = 32
 print('program start')
 orig = time.time()
 
@@ -99,7 +99,7 @@ for N in n_values:
                 epoch_time = time.time() - start_epoch
                 all_data.loc[(N, Gamma, trial, epoch), ['energy', 'epoch time']] = energy.item(), epoch_time
 
-            torch.save(kan_model.state_dict(), f'models/n_{N}_h_{Gamma}_GSE_{round(energy.item(), 3)}.pt')
+            torch.save(kan_model.state_dict(), f'models/n_{N}_h_{Gamma}_GSE_{round(energy.item(), 3)}_t_{trial}.pt')
 
             trial_time = time.time() - start_trial
             f.write(f'processing N={N}, h={Gamma}, trial {trial} took {trial_time} seconds\n')
@@ -117,6 +117,6 @@ end = time.time()
 f = get_file()
 f.write(f'total runtime: {end - orig}\n')
 print(f'total runtime: {end - orig}')
-all_data.to_csv('data/KAN_n_10_20_data.csv')
+all_data.to_csv('data/KAN_h_0.1_data.csv')
 f.close()
 print('program end')
