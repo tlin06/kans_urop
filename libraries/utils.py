@@ -284,11 +284,11 @@ def rotate_right(state,rotations,N):
 
 def find_uniques(states, N):
     def found(uniques, state, N):
-            for u in uniques:
-                for rots in range(N):
-                    if u == rotate_right(state, rots, N):
-                        return u
-            return False
+        for u in uniques:
+            for rots in range(N):
+                if u == rotate_right(state, rots, N):
+                    return u
+        return False
 
     uniques = {}
     for state in states:
