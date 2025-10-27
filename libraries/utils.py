@@ -260,7 +260,7 @@ def get_nonzero_states(N, gs, threshold):
     signs = []
     for i in range(0, 2**N):
         val = gs[i][0].real
-        if abs(val) > threshold:
+        if abs(val) >= threshold:
             states.append(i)
             signs.append(-1 + 2 * int(val > 0))
     return states, signs
